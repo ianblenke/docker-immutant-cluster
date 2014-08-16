@@ -4,6 +4,10 @@ MAINTAINER ian@blenke.com
 # Expose the ports we're interested in
 EXPOSE 8080 
 
+# This cluster is orchestrated using maestro-ng
+RUN yum -y install python-pip
+RUN pip install maestro
+
 # Run everything below as the immutant user
 USER immutant
 
