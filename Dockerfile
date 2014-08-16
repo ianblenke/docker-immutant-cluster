@@ -12,9 +12,6 @@ USER immutant
 ADD standalone-ha-docker.xml /opt/immutant/jboss/standalone/configuration/
 ADD run.py /opt/immutant/.docker/
 
-# Change the owner of the /opt/immutant directory
-RUN chown -R immutant:immutant /opt/immutant/*
-
 VOLUME /opt/immutant/jboss/standalone/deployments/
 
 WORKDIR /opt/immutant
