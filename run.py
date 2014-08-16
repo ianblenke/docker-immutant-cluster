@@ -20,7 +20,7 @@ os.chdir(os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     '..'))
 
-GOSSIPROUTER_LIST = ','.join(["%s[%s]" % (host_port.split(':')[0], host_port.split(':')[1]) for host_port in get_node_list('gossiprouter', ports=['gossiprouter'])])
+GOSSIPROUTER_LIST = ','.join(["%s[%s]" % tuple(host_port.split(':')) for host_port in get_node_list('gossiprouter', ports=['gossiprouter'])])
 GOSSIPROUTER_COUNT = len(get_node_list('gossiprouter', ports=['gossiprouter']))
 
 # Setup the JMX Java agent and various JVM options.
