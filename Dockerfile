@@ -6,14 +6,14 @@ EXPOSE 8080
 
 # This cluster is orchestrated using maestro-ng
 USER root
-RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel
+RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel git
 RUN yum-builddep -y python-pip
+RUN pip install git+git://github.com/signalfuse/maestro-ng
 
 # Run everything below as the immutant user
 USER immutant
 
 WORKDIR /opt/immutant
-RUN pip install --user --upgrade git+git://github.com/signalfuse/maestro-ng
 
 # Set the default command to run on boot
 # This will boot Immutant in the standalone mode and bind to all interfaces
