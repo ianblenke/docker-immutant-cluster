@@ -47,7 +47,7 @@ jvm_opts += [
 ]
 
 # Process the standalone-ha-docker.xml file
-fp = open("standalone-ha-docker.xml",'r')
+fp = open('/opt/immutant/jboss/standalone/configuration/standalone-ha-docker.xml','r')
 # Finding all occurrences of ${jboss.variable:default}
 expr = re.compile("\$\{([^\}:]+)\:?([^\}]*)\}?", re.M)
 lines = fp.read()
