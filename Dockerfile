@@ -8,10 +8,12 @@ EXPOSE 8080
 USER root
 RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel
 RUN yum-builddep -y python-pip
-RUN pip install maestro
 
 # Run everything below as the immutant user
 USER immutant
+
+WORKDIR /opt/immutant
+RUN pip install --user --upgrade git+git://github.com/signalfuse/maestro-ng
 
 # Set the default command to run on boot
 # This will boot Immutant in the standalone mode and bind to all interfaces
@@ -20,5 +22,4 @@ ADD run.py /opt/immutant/.docker/
 
 VOLUME /opt/immutant/jboss/standalone/deployments/
 
-WORKDIR /opt/immutant
 CMD ["python", "/opt/immutant/.docker/run.py"]
