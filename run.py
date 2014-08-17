@@ -67,4 +67,6 @@ for el in expr.findall(lines):
 
 os.environ['JBOSS_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
 
+os.mkdirs('/opt/immutant/jboss/standalone/data/content')
+os.mkdirs('/opt/immutant/jboss/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore')
 os.execl('/opt/immutant/jboss/bin/standalone.sh',"-b","0.0.0.0",'--server-config','/opt/immutant/jboss/standalone/configuration/standalone-ha-docker.xml')

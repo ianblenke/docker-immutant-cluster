@@ -23,4 +23,6 @@ ADD run.py /opt/immutant/.docker/
 VOLUME /opt/immutant/jboss/standalone/data/
 VOLUME /opt/immutant/jboss/standalone/deployments/
 
+RUN mkdir -p /opt/immutant/jboss/standalone/data/content
+
 CMD ["python", "/opt/immutant/.docker/run.py"]

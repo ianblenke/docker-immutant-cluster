@@ -217,7 +217,7 @@
             <cached-connection-manager/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="${jboss.default.jgroups.stack:tcpgossip}">
-            <stack name="tcpgossip" description="Used with a GossipRouter">
+            <stack name="tcpgossip">
                 <transport type="TCP" socket-binding="jgroups-tcp"/>
                 <protocol type="TCPGOSSIP">
                     <property name="initial_hosts">${docker.gossiprouter.hosts:172.17.42.1[12001]}</property>
@@ -436,7 +436,7 @@
         <socket-binding name="messaging" port="${jboss.messaging.port:5445}"/>
         <socket-binding name="messaging-group" port="0" multicast-address="${jboss.messaging.group.address:231.7.7.7}" multicast-port="${jboss.messaging.group.port:9876}"/>
         <socket-binding name="messaging-throughput" port="${jboss.messaging.throughput:5455}"/>
-        <socket-binding name="modcluster" port="0" multicast-address="${jboss.modcluster.multicast.address:224.0.1.105}" multicast-port="%{jboss.modcluster.multicast.port:23364}"/>
+        <socket-binding name="modcluster" port="0" multicast-address="${jboss.modcluster.multicast.address:224.0.1.105}" multicast-port="${jboss.modcluster.multicast.port:23364}"/>
         <socket-binding name="remoting" port="${jboss.remoting.port:4447}"/>
         <socket-binding name="txn-recovery-environment" port="${jboss.txn.recovery.environment.port:4712}"/>
         <socket-binding name="txn-status-manager" port="${jboss.txn.status.manager.port:4713}"/>
