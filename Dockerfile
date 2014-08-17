@@ -6,7 +6,7 @@ EXPOSE 8080
 
 # This cluster is orchestrated using maestro-ng
 USER root
-RUN yum -y install python-pip yum-utils
+RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel
 RUN yum-builddep -y python-pip
 RUN pip install maestro
 
