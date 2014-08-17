@@ -5,6 +5,7 @@
 import logging
 import os
 import sys
+import re
 
 from maestro.guestutils import get_container_name, \
     get_container_host_address, \
@@ -43,13 +44,30 @@ if jmx_port != -1:
         '-Dcom.sun.management.jmxremote.ssl=false',
     ]
 
+# Add any auto-discovered details from maestro-ng
 jvm_opts += [
-    '-Djboss.messaging.cluster.password={}'.format(os.environ['HORNETQ_PASSWORD']),
     '-Djboss.node.name={}'.format(get_container_name()),
-    '-Djboss.default.jgroups.stack=tcpgossip',
     '-Ddocker.gossiprouter.hosts={}'.format(GOSSIPROUTER_LIST),
     '-Ddocker.gossiprouter.count={}'.format(GOSSIPROUTER_COUNT)
 ]
+
+# Process the standalone-ha-docker.xml file
+fp = open("standalone-ha-docker.xml",'r')
+# Finding all occurrences of ${jboss.variable:default}
+expr = re.compile("\$\{([^\}:]+)\:?([^\}]*)\}?", re.M)
+lines = fp.read()
+fp.close()
+for el in expr.findall(lines):
+  # Pull out the jboss.variable
+  jboss_variable = el[0]
+  # Pull out the default
+  default = el[1]
+  # Convert jboss.variable to JBOSS_VARIABLE
+  env_variable = re.sub(r"\.", "_", jboss_variable).upper()
+  # Check if there is an environment variable named JBOSS_VARIABLE
+  value = os.environ.get(env_variable)
+  # Add the -D define for the jboss.variable if a value was found in the environment
+  jvm_opts += [ "-D{}='{}'".format( jboss_variable, value ) ] if value
 
 os.environ['JBOSS_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
 

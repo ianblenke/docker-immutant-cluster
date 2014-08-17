@@ -152,7 +152,7 @@
                 <level name="${jboss.logging.level:INFO}"/>
                 <handlers>
                     <handler name="CONSOLE"/>
-                    <handler name="FILE"/>
+                    <!-- <handler name="FILE"/> --> <!-- We don't need to log to a file with docker -->
                 </handlers>
             </root-logger>
         </subsystem>
@@ -216,13 +216,13 @@
             </default-workmanager>
             <cached-connection-manager/>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="udp">
+        <subsystem xmlns="urn:jboss:domain:jgroups:1.1" default-stack="${jboss.default.jgroups.stack:tcpgossip}">
             <stack name="tcpgossip" description="Used with a GossipRouter">
                 <transport type="TCP" socket-binding="jgroups-tcp"/>
                 <protocol type="TCPGOSSIP">
                     <property name="initial_hosts">${docker.gossiprouter.hosts:172.17.42.1[12001]}</property>
                     <property name="num_initial_members">${docker.gossiprouter.count:1}</property>
-                    <property name="timeout">3000</property>
+                    <property name="timeout">${jboss.jgroups.tcpgossip.timeout:3000}</property>
                 </protocol> 
             </stack>
             <stack name="udp">
@@ -265,22 +265,22 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:messaging:1.3">
             <hornetq-server>
-                <cluster-password>${jboss.messaging.cluster.password:CHANGE ME!!}</cluster-password>
-                <persistence-enabled>true</persistence-enabled>
-                <journal-file-size>102400</journal-file-size>
-                <journal-min-files>2</journal-min-files>
+                <cluster-password>${jboss.messaging.cluster.password:CHANGEME}</cluster-password>
+                <persistence-enabled>${jboss.messaging.persistence.enabled:true}</persistence-enabled>
+                <journal-file-size>${jboss.messaging.journal.file.size:102400}</journal-file-size>
+                <journal-min-files>${jboss.messages.journal.min.files:2}</journal-min-files>
                 <connectors>
                     <netty-connector name="netty" socket-binding="messaging"/>
                     <netty-connector name="netty-throughput" socket-binding="messaging-throughput">
-                        <param key="batch-delay" value="50"/>
+                        <param key="batch-delay" value="${jboss.message.netty.batch.delay:50}"/>
                     </netty-connector>
                     <in-vm-connector name="in-vm" server-id="0"/>
                 </connectors>
                 <acceptors>
                     <netty-acceptor name="netty" socket-binding="messaging"/>
                     <netty-acceptor name="netty-throughput" socket-binding="messaging-throughput">
-                        <param key="batch-delay" value="50"/>
-                        <param key="direct-deliver" value="false"/>
+                        <param key="batch-delay" value="${jboss.message.netty.batch.delay:50}"/>
+                        <param key="direct-deliver" value="${jboss.message.netty.direct.deliver:false}"/>
                     </netty-acceptor>
                     <in-vm-acceptor name="in-vm" server-id="0"/>
                 </acceptors>
@@ -288,7 +288,7 @@
                     <broadcast-group name="bg-group1">
                         <jgroups-stack>${msg.jgroups.stack:udp}</jgroups-stack>
                         <jgroups-channel>${msg.jgroups.channel:hq-cluster}</jgroups-channel>
-                        <broadcast-period>5000</broadcast-period>
+                        <broadcast-period>${msg.jgroups.broadcast.period:5000}</broadcast-period>
                         <connector-ref>netty</connector-ref>
                     </broadcast-group>
                 </broadcast-groups>
@@ -296,11 +296,11 @@
                     <discovery-group name="dg-group1">
                         <jgroups-stack>${msg.jgroups.stack:udp}</jgroups-stack>
                         <jgroups-channel>${msg.jgroups.channel:hq-cluster}</jgroups-channel>
-                        <refresh-timeout>10000</refresh-timeout>
+                        <refresh-timeout>${msg.jgroups.refresh.timeout:10000}</refresh-timeout>
                     </discovery-group>
                 </discovery-groups>
                 <cluster-connections>
-                    <cluster-connection name="my-cluster">
+                    <cluster-connection name="${jboss.cluster.name:my-cluster}">
                         <address>jms</address>
                         <connector-ref>netty</connector-ref>
                         <discovery-group-ref discovery-group-name="dg-group1"/>
@@ -345,8 +345,8 @@
                         </entries>
                     </connection-factory>
                 </jms-connection-factories>
-                <security-enabled>false</security-enabled>
-                <jmx-management-enabled>true</jmx-management-enabled>
+                <security-enabled>${jboss.messaging.security.enabled:false}</security-enabled>
+                <jmx-management-enabled>${jboss.messaging.jmx.management.enabled:true}</jmx-management-enabled>
             </hornetq-server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:modcluster:1.1">
@@ -397,7 +397,7 @@
             <connector name="ajp" protocol="AJP/1.3" scheme="http" socket-binding="ajp"/>
             <virtual-server name="default-host" enable-welcome-root="false">
                 <alias name="localhost"/>
-                <alias name="example.com"/>
+                <alias name="${jboss.virtual.server.alias:example.com}"/>
             </virtual-server>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:immutant-jobs:1.0"/>
@@ -421,27 +421,27 @@
             <inet-address value="${jboss.bind.address.unsecure:127.0.0.1}"/>
         </interface>
     </interfaces>
-    <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
-        <socket-binding name="management-native" interface="management" port="${jboss.management.native.port:9999}"/>
-        <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
-        <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9443}"/>
-        <socket-binding name="ajp" port="8009"/>
+    <socket-binding-group name="standard-sockets" default-interface="${jboss.standard.sockets.default.interface:public}" port-offset="${jboss.socket.binding.port-offset:0}">
+        <socket-binding name="management-native" interface="${jboss.management.native.interface:management}" port="${jboss.management.native.port:9999}"/>
+        <socket-binding name="management-http" interface="${jboss.management.http.interface:management}" port="${jboss.management.http.port:9990}"/>
+        <socket-binding name="management-https" interface="${jboss.management.https.interface:management}" port="${jboss.management.https.port:9443}"/>
+        <socket-binding name="ajp" port="${ajp.port:8009}"/>
         <socket-binding name="http" port="${http.port:8080}"/>
-        <socket-binding name="https" port="8443"/>
-        <socket-binding name="jgroups-mping" port="0" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45700"/>
-        <socket-binding name="jgroups-tcp" port="7600"/>
-        <socket-binding name="jgroups-tcp-fd" port="57600"/>
-        <socket-binding name="jgroups-udp" port="55200" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45688"/>
-        <socket-binding name="jgroups-udp-fd" port="54200"/>
-        <socket-binding name="messaging" port="5445"/>
+        <socket-binding name="https" port="${https.port:8443}"/>
+        <socket-binding name="jgroups-mping" port="${jboss.jgroups.mping.port:0}" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="${jboss.jgroups.mping.multicast.port:45700}"/>
+        <socket-binding name="jgroups-tcp" port="${jboss.jgroups.tcp.port:7600}"/>
+        <socket-binding name="jgroups-tcp-fd" port="${jboss.jgroups.tcp.fd.port:57600}"/>
+        <socket-binding name="jgroups-udp" port="${jboss.jgroups.udp.port:55200}" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="${jboss.jgroups.udp.multicast.port:45688}"/>
+        <socket-binding name="jgroups-udp-fd" port="${jboss.jgroups.udp.fd.port:54200}"/>
+        <socket-binding name="messaging" port="${jboss.messaging.port:5445}"/>
         <socket-binding name="messaging-group" port="0" multicast-address="${jboss.messaging.group.address:231.7.7.7}" multicast-port="${jboss.messaging.group.port:9876}"/>
-        <socket-binding name="messaging-throughput" port="5455"/>
-        <socket-binding name="modcluster" port="0" multicast-address="224.0.1.105" multicast-port="23364"/>
-        <socket-binding name="remoting" port="4447"/>
-        <socket-binding name="txn-recovery-environment" port="4712"/>
-        <socket-binding name="txn-status-manager" port="4713"/>
+        <socket-binding name="messaging-throughput" port="${jboss.messaging.throughput:5455}"/>
+        <socket-binding name="modcluster" port="0" multicast-address="${jboss.modcluster.multicast.address:224.0.1.105}" multicast-port="%{jboss.modcluster.multicast.port:23364}"/>
+        <socket-binding name="remoting" port="${jboss.remoting.port:4447}"/>
+        <socket-binding name="txn-recovery-environment" port="${jboss.txn.recovery.environment.port:4712}"/>
+        <socket-binding name="txn-status-manager" port="${jboss.txn.status.manager.port:4713}"/>
         <outbound-socket-binding name="mail-smtp">
-            <remote-destination host="localhost" port="25"/>
+          <remote-destination host="${jboss.mail.smtp.host:localhost}" port="${jboss.mail.smtp.port:25}"/>
         </outbound-socket-binding>
     </socket-binding-group>
 </server>
