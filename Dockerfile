@@ -5,6 +5,7 @@ MAINTAINER ian@blenke.com
 EXPOSE 8080 
 
 # This cluster is orchestrated using maestro-ng
+USER root
 RUN sudo yum -y install python-pip
 RUN sudo pip install maestro
 
