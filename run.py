@@ -65,8 +65,12 @@ for el in expr.findall(lines):
     value = os.environ.get(env_variable)
     jvm_opts += [ "-D{}='{}'".format( jboss_variable, value ) ]
 
-os.environ['JBOSS_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
+os.environ['JAVA_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
+
+with open("/opt/immutant/jboss/bin/standalone.conf"), "a") as conffile:
+      conffile.write("JAVA_OPTS=$JAVA_OPTS\ '{}'".format(os.environ['JAVA_OPTS'])
 
 os.mkdirs('/opt/immutant/jboss/standalone/data/content')
 os.mkdirs('/opt/immutant/jboss/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore')
-os.execl('/opt/immutant/jboss/bin/standalone.sh',"-b","0.0.0.0",'--server-config','/opt/immutant/jboss/standalone/configuration/standalone-ha-docker.xml')
+
+os.execl('/opt/immutant/jboss/bin/standalone.sh','--server-config=/opt/immutant/jboss/standalone/configuration/standalone-ha-docker.xml')
