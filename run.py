@@ -69,7 +69,7 @@ for el in expr.findall(lines):
 os.environ['JAVA_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
 
 with open("/opt/immutant/jboss/bin/standalone.conf", "a") as conffile:
-      conffile.write("JAVA_OPTS=$JAVA_OPTS\ '{}'".format(os.environ['JAVA_OPTS'])
+      conffile.write("JAVA_OPTS=$JAVA_OPTS\ '{}'".format(os.environ['JAVA_OPTS']))
 
 os.makedirs('/opt/immutant/jboss/standalone/data/content')
 os.makedirs('/opt/immutant/jboss/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore')
