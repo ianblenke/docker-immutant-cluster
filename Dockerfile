@@ -7,8 +7,7 @@ EXPOSE 8080
 # This cluster is orchestrated using maestro-ng
 USER root
 RUN yum -y install python-pip yum-utils
-RUN yum-builddep python-pip
-#RUN yum groupinstall "Development Tools" "Development Libraries"
+RUN yum-builddep -y python-pip
 RUN pip install maestro
 
 # Run everything below as the immutant user
