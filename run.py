@@ -43,7 +43,8 @@ if jmx_port != -1:
 jvm_opts += [
     '-Djboss.node.name={}'.format(get_container_name()),
     '-Ddocker.gossiprouter.hosts={}'.format(GOSSIPROUTER_LIST),
-    '-Ddocker.gossiprouter.count={}'.format(GOSSIPROUTER_COUNT)
+    '-Ddocker.gossiprouter.count={}'.format(GOSSIPROUTER_COUNT),
+    '-Djava.library.path=/lib64:/opt/immutant/jboss/modules/system/layers/base/org/hornetq/main/lib/linux-x86_64'
 ]
 
 # Process the standalone-ha-docker.xml file
