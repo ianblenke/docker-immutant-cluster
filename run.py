@@ -7,12 +7,7 @@ import os
 import sys
 import re
 
-from maestro.guestutils import get_container_name, \
-    get_container_host_address, \
-    get_environment_name, \
-    get_node_list, \
-    get_port, \
-    get_service_name
+from maestro.guestutils import *
 
 # Setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -65,9 +60,9 @@ for el in expr.findall(lines):
   # Convert jboss.variable to JBOSS_VARIABLE
   env_variable = re.sub(r"\.", "_", jboss_variable).upper()
   # Check if there is an environment variable named JBOSS_VARIABLE
-  value = os.environ.get(env_variable)
-  # Add the -D define for the jboss.variable if a value was found in the environment
-  if value is not None:
+  if env_variable in os.environ:
+    # Add the -D define for the jboss.variable if a value was found in the environment
+    value = os.environ.get(env_variable)
     jvm_opts += [ "-D{}='{}'".format( jboss_variable, value ) ]
 
 os.environ['JBOSS_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
