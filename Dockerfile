@@ -10,6 +10,9 @@ RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel g
 RUN yum-builddep -y python-pip
 RUN pip install git+git://github.com/signalfuse/maestro-ng
 
+RUN mkdir -p /opt/immutant/jboss/standalone/data/content /opt/immutant/jboss/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore
+RUN chown -R immutant:immutant /opt/immutant/jboss/standalone/data/
+
 # Run everything below as the immutant user
 USER immutant
 
@@ -22,7 +25,5 @@ ADD run.py /opt/immutant/.docker/
 
 VOLUME /opt/immutant/jboss/standalone/data/
 VOLUME /opt/immutant/jboss/standalone/deployments/
-
-RUN mkdir -p /opt/immutant/jboss/standalone/data/content
 
 CMD ["python", "/opt/immutant/.docker/run.py"]
