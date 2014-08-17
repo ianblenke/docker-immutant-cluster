@@ -6,7 +6,7 @@ EXPOSE 8080
 
 # This cluster is orchestrated using maestro-ng
 USER root
-RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel git
+RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel git libaio
 RUN yum-builddep -y python-pip
 RUN pip install git+git://github.com/signalfuse/maestro-ng
 
@@ -20,6 +20,7 @@ WORKDIR /opt/immutant
 ADD standalone-ha-docker.xml /opt/immutant/jboss/standalone/configuration/
 ADD run.py /opt/immutant/.docker/
 
+VOLUME /opt/immutant/jboss/standalone/data/
 VOLUME /opt/immutant/jboss/standalone/deployments/
 
 CMD ["python", "/opt/immutant/.docker/run.py"]
