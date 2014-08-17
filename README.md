@@ -70,7 +70,6 @@ services:
           cpu: 10
       immutant-2:
         ship: docker-host-2
-ev.cf3.us
         ports: {immutanthttp: 8080}
         lifecycle:
           running: [{type: tcp, port: immutanthttp}]
