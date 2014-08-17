@@ -67,7 +67,8 @@ for el in expr.findall(lines):
   # Check if there is an environment variable named JBOSS_VARIABLE
   value = os.environ.get(env_variable)
   # Add the -D define for the jboss.variable if a value was found in the environment
-  jvm_opts += [ "-D{}='{}'".format( jboss_variable, value ) ] if value
+  if value is not None:
+    jvm_opts += [ "-D{}='{}'".format( jboss_variable, value ) ]
 
 os.environ['JBOSS_OPTS'] = ' '.join(jvm_opts) + os.environ.get('JVM_OPTS', '')
 
