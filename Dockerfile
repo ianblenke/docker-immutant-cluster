@@ -6,8 +6,8 @@ EXPOSE 8080
 
 # This cluster is orchestrated using maestro-ng
 USER root
-RUN sudo yum -y install python-pip
-RUN sudo pip install maestro
+RUN yum -y install python-pip
+RUN pip install maestro
 
 # Run everything below as the immutant user
 USER immutant
