@@ -10,8 +10,8 @@ RUN yum -y install python-pip yum-utils make automake gcc gcc-c++ kernel-devel g
 RUN yum-builddep -y python-pip
 RUN pip install git+git://github.com/signalfuse/maestro-ng
 
-RUN mkdir -p /opt/immutant/jboss/standalone/data/content /opt/immutant/jboss/standalone/data/tx-object-store/ShadowNoFileLockStore/defaultStore
-RUN chown -R immutant:immutant /opt/immutant/jboss/standalone/data/
+RUN mkdir -p /opt/immutant/jboss/standalone/data
+RUN chown -R immutant:immutant /opt/immutant/jboss/standalone/data
 
 # Run everything below as the immutant user
 USER immutant
