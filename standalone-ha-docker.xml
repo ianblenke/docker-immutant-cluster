@@ -286,7 +286,7 @@
                 </acceptors>
                 <broadcast-groups>
                     <broadcast-group name="bg-group1">
-                        <jgroups-stack>${msg.jgroups.stack:udp}</jgroups-stack>
+                        <jgroups-stack>${msg.jgroups.stack:tcpgossip}</jgroups-stack>
                         <jgroups-channel>${msg.jgroups.channel:hq-cluster}</jgroups-channel>
                         <broadcast-period>${msg.jgroups.broadcast.period:5000}</broadcast-period>
                         <connector-ref>netty</connector-ref>
@@ -294,7 +294,7 @@
                 </broadcast-groups>
                 <discovery-groups>
                     <discovery-group name="dg-group1">
-                        <jgroups-stack>${msg.jgroups.stack:udp}</jgroups-stack>
+                        <jgroups-stack>${msg.jgroups.stack:tcpgossip}</jgroups-stack>
                         <jgroups-channel>${msg.jgroups.channel:hq-cluster}</jgroups-channel>
                         <refresh-timeout>${msg.jgroups.refresh.timeout:10000}</refresh-timeout>
                     </discovery-group>
