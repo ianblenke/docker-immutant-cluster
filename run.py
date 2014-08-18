@@ -19,26 +19,13 @@ os.chdir(os.path.join(
 GOSSIPROUTER_LIST = ','.join(["%s[%s]" % tuple(host_port.split(':')) for host_port in get_node_list('gossiprouter', ports=['gossiprouter'])])
 GOSSIPROUTER_COUNT = len(get_node_list('gossiprouter', ports=['gossiprouter']))
 
-# Setup the JMX Java agent and various JVM options.
+# Setup the various JVM options.
 jvm_opts = [
     '-server',
     '-showversion',
     '-Dvisualvm.display.name="{}/{}"'.format(
         get_environment_name(), get_container_name()),
 ]
-
-jmx_port = get_port('jmx', -1)
-if jmx_port != -1:
-    os.environ['JMX_PORT'] = str(jmx_port)
-    jvm_opts += [
-        '-Djava.rmi.server.hostname={}'.format(get_container_host_address()),
-        '-Dcom.sun.management.jmxremote.port={}'.format(jmx_port),
-        '-Dcom.sun.management.jmxremote.rmi.port={}'.format(jmx_port),
-        '-Dcom.sun.management.jmxremote.authenticate=false',
-        '-Dcom.sun.management.jmxremote.local.only=false',
-        '-Dcom.sun.management.jmxremote.ssl=false',
-        '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
-    ]
 
 # Add any auto-discovered details from maestro-ng
 jvm_opts += [
